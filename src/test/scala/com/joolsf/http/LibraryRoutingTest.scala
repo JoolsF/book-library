@@ -1,11 +1,13 @@
 package com.joolsf.http
 
+import java.time.LocalDate
+
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.model.{ ContentTypes, MessageEntity, StatusCodes }
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import com.joolsf.entities.{ Book, BookRequest, EmployeeRequest }
+import com.joolsf.entities.{ Book, BookRequest, EmployeeRequest, LoanRequest }
 import com.joolsf.service.{ LibraryService, Services }
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -67,6 +69,24 @@ class LibraryRoutingTest extends FlatSpec with Matchers with ScalaFutures with J
       contentType should ===(ContentTypes.`text/plain(UTF-8)`)
 
       entityAs[String] should ===("1")
+    }
+  }
+
+  it should "add a new loan to the library" in {
+    val loanRequest = LoanRequest(1, 2)
+    val loanEntity = Marshal(loanRequest).to[MessageEntity].futureValue
+    val today = LocalDate.now
+
+    when(mockLibraryService.addLoan(loanRequest)).thenReturn(Future.successful(Right(today)))
+
+    val request = Post("/library/loans").withEntity(loanEntity).withHeaders(requestHeaders)
+
+    request ~> routes ~> check {
+      status should ===(StatusCodes.Created)
+
+      contentType should ===(ContentTypes.`text/plain(UTF-8)`)
+
+      entityAs[String] should ===(today.toString)
     }
   }
 

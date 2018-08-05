@@ -1,8 +1,7 @@
 package com.joolsf.http
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import spray.json.DefaultJsonProtocol
-import com.joolsf.entities.{ Book, BookRequest, Employee, EmployeeRequest }
+import com.joolsf.entities._
 
 trait JsonSupport extends SprayJsonSupport {
 
@@ -12,6 +11,8 @@ trait JsonSupport extends SprayJsonSupport {
   implicit val bookJsonFormat = jsonFormat3(Book)
 
   implicit val employeeRequestJsonFormat = jsonFormat1(EmployeeRequest)
+
+  implicit val loanRequestJsonFormat = jsonFormat2(LoanRequest)
 
 }
 

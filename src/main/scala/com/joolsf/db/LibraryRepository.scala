@@ -1,6 +1,8 @@
 package com.joolsf.db
 
-import com.joolsf.entities.{ Book, BookRequest, Employee, Loan }
+import java.time.LocalDate
+
+import com.joolsf.entities._
 
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.{ ExecutionContext, Future }
@@ -20,13 +22,29 @@ class LibraryRepository() {
   private val loans: ListBuffer[Loan] = ListBuffer()
 
   // books
+  def addBook(name: String)(implicit ec: ExecutionContext): Future[Int] = Future {
+    val id = autoInc()
+    books += Book(id, name, 1)
+    id
+  }
+
+  def getBook(id: Long)(implicit executionContext: ExecutionContext): Future[Option[Book]] = Future {
+    books.find(_.id == id)
+  }
+
   def getBook(name: String)(implicit executionContext: ExecutionContext): Future[Option[Book]] = Future {
     books.find(_.title == name)
   }
 
-  def updateBookNumber(book: Book)(implicit executionContext: ExecutionContext): Future[Int] = Future {
+  def incrementBookNumber(book: Book)(implicit executionContext: ExecutionContext): Future[Int] = Future {
     books -= book
     books += book.copy(numberOfCopies = book.numberOfCopies + 1)
+    1
+  }
+
+  def decrementBookNumber(book: Book)(implicit executionContext: ExecutionContext): Future[Int] = Future {
+    books -= book
+    books += book.copy(numberOfCopies = book.numberOfCopies - 1)
     1
   }
 
@@ -35,20 +53,29 @@ class LibraryRepository() {
     1
   }
 
-  def addBook(name: String)(implicit ec: ExecutionContext): Future[Int] = Future {
-    books += Book(autoInc(), name, 1)
-    1
-  }
-
   // employees
+  def addEmployee(name: String)(implicit executionContext: ExecutionContext): Future[Int] = Future {
+    val id = autoInc()
+    employees += Employee(id, name)
+    id
+  }
 
   def getEmployee(name: String)(implicit executionContext: ExecutionContext): Future[Option[Employee]] = Future {
     employees.find(_.name == name)
   }
 
-  def addEmployee(name: String)(implicit executionContext: ExecutionContext): Future[Int] = Future {
+  def getEmployee(id: Long)(implicit executionContext: ExecutionContext): Future[Option[Employee]] = Future {
+    employees.find(_.id == id)
+  }
+
+  //loans
+  def addLoan(
+    book: Book,
+    employee: Employee,
+    loanDate: LocalDate,
+    returnDate: LocalDate)(implicit executionContext: ExecutionContext): Future[Int] = Future {
     val id = autoInc()
-    employees += Employee(id, name)
+    loans += Loan(id, book, employee, loanDate, returnDate)
     id
   }
 
