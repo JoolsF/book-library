@@ -6,7 +6,7 @@ import scala.collection.mutable.ListBuffer
 import scala.concurrent.{ ExecutionContext, Future }
 
 /**
- * Toy example to simulate a pesistence layer
+ * Toy example to simulate a persistence layer
  */
 class LibraryRepository() {
 
@@ -19,6 +19,7 @@ class LibraryRepository() {
   private val books: ListBuffer[Book] = ListBuffer()
   private val loans: ListBuffer[Loan] = ListBuffer()
 
+  // books
   def getBook(name: String)(implicit executionContext: ExecutionContext): Future[Option[Book]] = Future {
     books.find(_.title == name)
   }
@@ -37,6 +38,18 @@ class LibraryRepository() {
   def addBook(name: String)(implicit ec: ExecutionContext): Future[Int] = Future {
     books += Book(autoInc(), name, 1)
     1
+  }
+
+  // employees
+
+  def getEmployee(name: String)(implicit executionContext: ExecutionContext): Future[Option[Employee]] = Future {
+    employees.find(_.name == name)
+  }
+
+  def addEmployee(name: String)(implicit executionContext: ExecutionContext): Future[Int] = Future {
+    val id = autoInc()
+    employees += Employee(id, name)
+    id
   }
 
 }
