@@ -11,11 +11,13 @@ trait LibraryRouting extends RouteItem with JsonSupport {
   override def routes: Route = extractExecutionContext { implicit ec =>
     pathPrefix("library") {
       ping ~
-        pathPrefix("books") {
-          post {
-            entity(as[BookRequest]) { bookRequest =>
-              onSuccess(services.libraryService.addBook(bookRequest)) { res =>
-                complete(StatusCodes.OK, res)
+        libraryUserValidationWithToken() { _ =>
+          pathPrefix("books") {
+            post {
+              entity(as[BookRequest]) { bookRequest =>
+                onSuccess(services.libraryService.addBook(bookRequest)) { res =>
+                  complete(StatusCodes.Created, res)
+                }
               }
             }
           }
