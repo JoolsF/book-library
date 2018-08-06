@@ -1,18 +1,18 @@
 package com.joolsf.http
 
+import com.joolsf.entities.{ Book, BookRequest, EmployeeRequest, LoanRequest }
+import com.joolsf.service.{ LibraryService, Services }
 import java.time.LocalDate
-
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.model.{ ContentTypes, MessageEntity, StatusCodes }
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import com.joolsf.entities.{ Book, BookRequest, EmployeeRequest, LoanRequest }
-import com.joolsf.service.{ LibraryService, Services }
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{ FlatSpec, Matchers }
+import io.circe.generic.auto._
 
 import scala.concurrent.Future
 
@@ -51,7 +51,7 @@ class LibraryRoutingTest extends FlatSpec with Matchers with ScalaFutures with J
 
       contentType should ===(ContentTypes.`application/json`)
 
-      entityAs[String] should ===("""{"id":1,"title":"book one","numberOfCopies":1}""")
+      entityAs[Book] shouldBe Book(1, "book one", 1)
     }
   }
 
@@ -66,7 +66,7 @@ class LibraryRoutingTest extends FlatSpec with Matchers with ScalaFutures with J
     request ~> routes ~> check {
       status should ===(StatusCodes.Created)
 
-      contentType should ===(ContentTypes.`text/plain(UTF-8)`)
+      contentType should ===(ContentTypes.`application/json`)
 
       entityAs[String] should ===("1")
     }
@@ -84,7 +84,7 @@ class LibraryRoutingTest extends FlatSpec with Matchers with ScalaFutures with J
     request ~> routes ~> check {
       status should ===(StatusCodes.Created)
 
-      contentType should ===(ContentTypes.`text/plain(UTF-8)`)
+      contentType should ===(ContentTypes.`application/json`)
 
       entityAs[String] should ===(today.toString)
     }

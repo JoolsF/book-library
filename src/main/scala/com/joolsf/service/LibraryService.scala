@@ -20,6 +20,16 @@ class LibraryService(libraryRepository: LibraryRepository) {
           .flatMap(_ => libraryRepository.getBook(bookRequest.title))
     }
 
+  def getEmployeesLoans(employeeId: Int)(implicit ec: ExecutionContext): Result[List[Loan]] =
+    for {
+      employeeExists <- libraryRepository.getEmployee(employeeId)
+      loan <- libraryRepository.getLoansByEmployeeId(employeeId)
+      res <- (employeeExists, loan) match {
+        case (None, _) => Future.successful(Left(NotFoundError("")))
+        case (Some(_), res) => Future.successful(Right(res))
+      }
+    } yield res
+
   def addEmployee(employeeRequest: EmployeeRequest)(implicit ec: ExecutionContext): Future[Option[Int]] =
     libraryRepository.getEmployee(employeeRequest.name).flatMap {
       case Some(_) => Future.successful(None)

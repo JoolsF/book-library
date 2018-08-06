@@ -8,7 +8,7 @@ case class Book(id: Long, title: String, numberOfCopies: Int)
 
 case class Loan(id: Long, book: Book, employee: Employee, loanDate: LocalDate, returnDate: LocalDate)
 
-//HTTP
+// http request
 case class EmployeeRequest(name: String)
 
 case class BookRequest(title: String)

@@ -1,7 +1,7 @@
 package com.joolsf.http
 
-import akka.http.scaladsl.server.{ AuthorizationFailedRejection, Directive1, Directives, Route }
 import com.joolsf.service.Services
+import akka.http.scaladsl.server.{ AuthorizationFailedRejection, Directive1, Directives, Route }
 
 trait RouteItem extends Directives {
 
@@ -12,10 +12,10 @@ trait RouteItem extends Directives {
 
   def routes: Route
 
-  def withLibaryUserName: Directive1[String] = headerValueByName(LibaryUserTokenName)
+  def withLibraryUserName: Directive1[String] = headerValueByName(LibaryUserTokenName)
 
   def libraryUserValidationWithToken(): Directive1[Long] =
-    withLibaryUserName.flatMap { token =>
+    withLibraryUserName.flatMap { token =>
       if (token == LibraryUserTokenTestValue) {
         provide(1) //test value
       } else {

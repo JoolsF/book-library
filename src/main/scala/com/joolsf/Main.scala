@@ -1,14 +1,13 @@
 package com.joolsf
 
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
-import akka.actor.{ ActorRef, ActorSystem }
-import akka.http.scaladsl.Http
-import akka.http.scaladsl.server.Route
-import akka.stream.ActorMaterializer
 import com.joolsf.db.LibraryRepository
 import com.joolsf.http.LibraryRouting
 import com.joolsf.service.{ LibraryService, Services }
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
+import akka.actor.ActorSystem
+import akka.http.scaladsl.Http
+import akka.stream.ActorMaterializer
 
 object QuickstartServer extends App with LibraryRouting {
 

@@ -1,21 +1,18 @@
 package com.jools.service
 
-import java.time.LocalDate
-
 import com.joolsf.db.LibraryRepository
 import com.joolsf.entities._
-import com.joolsf.http.JsonSupport
 import com.joolsf.service.LibraryService
 import org.scalatest.{ FlatSpec, Matchers }
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
-
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class LibraryServiceTest extends FlatSpec with Matchers with ScalaFutures with JsonSupport with MockitoSugar {
+class LibraryServiceTest extends FlatSpec with Matchers with ScalaFutures with MockitoSugar {
 
   val libraryService = new LibraryService(
-    new LibraryRepository //Note - not mocking repository database dependency as its a fake db anyway.
+    new LibraryRepository //Note - not mocking repository database dependency as its a fake db
   )
 
   it should "add a book to the library" in {
